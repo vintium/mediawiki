@@ -1,12 +1,11 @@
-import aiohttp
 import asyncio
-
-from urllib.parse import urlencode
-from typing import Union
-from typing import Optional
-from typing import overload
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import Optional, Union, overload
+from urllib.parse import urlencode
+
+import aiohttp
+
 
 def _join_params(params: Iterable[str]) -> str:
     # FIXME: if params need to have '|' in them, use other seperation method according to information here:
@@ -23,26 +22,28 @@ class Wiki:
     @overload
     async def summary(self, titles: str) -> Optional[str]:
         ...
-    
+
     @overload
     async def summary(self, titles: Iterable[str]) -> dict[str, Optional[str]]:
         ...
-    
-    async def summary(self, titles: Union[str, Iterable[str]]) -> Union[Optional[str], dict[str, Optional[str]]]:
+
+    async def summary(
+        self, titles: Union[str, Iterable[str]]
+    ) -> Union[Optional[str], dict[str, Optional[str]]]:
         call = {
-            'action' : 'query',
-                'prop' : 'extracts',
-                    'exintro' : True,
-                    'explaintext' : True,
-                'titles' : titles if type(titles) is str else _join_params(titles),
-            'format' : 'json',
+            'action': 'query',
+            'prop': 'extracts',
+            'exintro': True,
+            'explaintext': True,
+            'titles': titles if type(titles) is str else _join_params(titles),
+            'format': 'json',
         }
-        async with aiohttp.ClientSession() as session, session.get(self._endpoint + '?' + urlencode(call)) as response:
-            return await response.json()   
-    
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(self._endpoint + '?' + urlencode(call)) as response,
+        ):
+            return await response.json()
+
+
 EN_WIKIPEDIA = Wiki("https://en.wikipedia.org/w/api.php")
 summary = EN_WIKIPEDIA.summary
-
-
-
-
