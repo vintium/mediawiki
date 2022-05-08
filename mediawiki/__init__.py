@@ -1,1 +1,1 @@
-from py_wikipedia.lib import *
+from mediawiki.lib import *
