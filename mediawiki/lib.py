@@ -25,10 +25,10 @@ class Wiki:
         ...
     
     @overload
-    async def summary(self, titles: list[str]) -> dict[str, Optional[str]]:
+    async def summary(self, titles: Iterable[str]) -> dict[str, Optional[str]]:
         ...
     
-    async def summary(self, titles: Union[str, list[str]]) -> Union[Optional[str], dict[str, Optional[str]]]:
+    async def summary(self, titles: Union[str, Iterable[str]]) -> Union[Optional[str], dict[str, Optional[str]]]:
         call = {
             'action' : 'query',
                 'prop' : 'extracts',
